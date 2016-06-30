@@ -12,23 +12,27 @@ Ext.application({
 
         window.debugPanel = Ext.create('Ext.panel.Panel', {
             title: 'Debug Details',
+            id: 'debug-panel',
             width: 300,
             html: '',
             renderTo: Ext.getBody()
         });
-
+        
     }
 });
 
-function log (data){
-    var old = debugPanel.body.dom.innerHTML;
-    debugPanel.body.update(old+ "<br/>" + data);
+function log (html){
     
-    console.log(old);
+    var html = debugPanel.body.dom.innerHTML + "<br/>" + html;
+    debugPanel.update(html);
+
 }
 
 
+
 function createForm() {
+    
+    log('Form created!');
 
 
     var classField = new Ext.form.RadioGroup({
@@ -71,7 +75,7 @@ function createForm() {
         renderTo: Ext.getBody(),
         handler: function () {
             panel.close();
-            log('Cancelled Clicked!');
+            log('Cancel Clicked!');
         }
     });
 
@@ -80,7 +84,7 @@ function createForm() {
         renderTo: Ext.getBody(),
         handler: function () {
             panel.getForm().reset();
-            log('Cancelled Clicked!');
+            log('Reset Clicked!');
         }
     });
 
@@ -88,19 +92,31 @@ function createForm() {
         text: 'Save',
         renderTo: Ext.getBody(),
         handler: function () {
-            debugPanel.update('Reset Clicked!');
+            
+            log('Save Clicked!');
             var values = panel.getForm().getValues();
             
             switch(values.travelClass){
                 default:
                 case 1:
-                    debugPanel.update('Reset Clicked!');
+                    log('Class: 1st');
                     break;
-                case 1:
+                case 2:
+                    log('Class: Economy');
                     break;
-                case 1:
+                case 3:
+                    log('Class: Coach');
                     break;
             }
+            
+            if(values.destination){
+                log('Destination: ' + values.destination);
+            }
+            
+            if(values.approved){
+                log('Approved: Yes');
+            }
+
         }
     });
 
