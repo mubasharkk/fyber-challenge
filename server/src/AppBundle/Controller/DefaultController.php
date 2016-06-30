@@ -9,39 +9,44 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 class DefaultController extends Controller {
 
   /**
    * @Route("/", name="homepage")
    */
   public function indexAction(Request $request) {
-	// replace this example code with whatever you need
-	return $this->render('default/index.html.twig', [
-				'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..'),
-	]);
-  }
+	
+	
+	$em = $this->getDoctrine()->getManager(); //get the database manager
 
-  /**
-   * @Route("/data", name="data_submit")
-   */
-  public function dataAction(Request $request) {
+	$allData = $em->getRepository('AppBundle:Data')->findAll(); // get the profiles
 	
 	// build form
 	$data = new Data();	
 	$form = $this->createForm(DataType::class, $data);
 	
+	$form->add('submit', SubmitType::class, array(
+	  'label' => 'Add Row',
+	  'attr'  => array('class' => 'btn btn-primary')
+	));
+	
 	//handle submit
 	$form->handleRequest($request);
-	
+		
 	if($form->isSubmitted() && $form->isValid()){
+	  	  
+	  $em->persist($data);
+	  $em->flush();
 	  
-	  return $this->redirectToRoute('/');
+	  return $this->redirectToRoute('homepage');
 	}
 	
 	
 	return $this->render(
 	  'data/dataform.html.twig',
-	  array('form' => $form->createView())
+	  array('form' => $form->createView(), 'allData' => $allData)
 	);	
   }
 

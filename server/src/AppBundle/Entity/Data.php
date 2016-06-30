@@ -39,7 +39,7 @@ class Data
 
     public function setText($text)
     {
-        $this->email = $text;
+        $this->text = $text;
     }
 
     public function getNumber()
@@ -49,7 +49,7 @@ class Data
 
     public function setNumber($number)
     {
-        $this->username = $number;
+        $this->number = $number;
     }
 
     public function getSalt()
